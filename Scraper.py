@@ -5,19 +5,19 @@ from bs4 import BeautifulSoup
 import requests
 import logging
 import time
+import re
 
 RFC_2822_FORMAT = '%a, %d %b %Y %H:%M:%S %Z'
 
 class PodcastFeedParser:
-    def __init__(self, url, utf):
+    def __init__(self, url):
         self.url = url
-        self.utf = utf
         self.episodes = None
         self.response = requests.get(url)
         if 200 != self.response.status_code:
             logging.error("status code {0} from {1}".format(self.response.status_code, url))
             raise IOError
-        self.xml = BeautifulSoup(self.response.content)
+        self.xml = BeautifulSoup(self.response.content, "html.parser")
 
     def get_title(self):
         title = self.xml.find('title')
@@ -37,7 +37,7 @@ class PodcastFeedParser:
 
     def get_image(self):
         image = self.xml.find('itunes:image')
-        if image is None or 'href' not in image:
+        if image is None or not image.has_attr('href'):
             logging.error("invalid image for {0}".format(self.url))
             raise IOError
         url = self._convert_text(image['href'])
@@ -53,7 +53,7 @@ class PodcastFeedParser:
 
     def get_category(self):
         category = self.xml.find('itunes:category')
-        if category is None or 'text' not in category:
+        if category is None or not category.has_attr('text'):
             logging.error("invalid category for {0}".format(self.url))
             raise IOError
         text = self._convert_text(category['text'])
@@ -154,7 +154,7 @@ class PodcastFeedParser:
 
         duration = episode.find('itunes:duration')
         if duration is not None:
-            duration_string = self._convert_text(duration.getText())
+            duration_string = duration.getText()
             count = duration_string.count(':')
             if 0 == count:
                 time_format = '%S'
@@ -219,8 +219,8 @@ class PodcastFeedParser:
             self.episodes = []
 
     def _convert_text(self, text):
-        if self.utf and isinstance(text, unicode):
-            text = text.encode('UTF-8')
+        #if self.utf and isinstance(text, str):
+        #    text = text.encode('UTF-8')
         return text
 
 def async_main():
