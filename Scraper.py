@@ -1,5 +1,5 @@
 __author__ = 'Chris Day'
-__publisher__ = 'Fabler LLC'
+__publisher__ = 'Fabler'
 
 from bs4 import BeautifulSoup
 import requests
