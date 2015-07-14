@@ -5,14 +5,14 @@ from bs4 import BeautifulSoup
 import requests
 import logging
 import time
-import re
 
 RFC_2822_FORMAT = '%a, %d %b %Y %H:%M:%S %Z'
+
 
 class PodcastFeedParser:
     def __init__(self, url):
         self.url = url
-        self.episodes = None
+        self.episodes = []
         self.response = requests.get(url)
         if 200 != self.response.status_code:
             logging.error("status code {0} from {1}".format(self.response.status_code, url))
@@ -24,7 +24,7 @@ class PodcastFeedParser:
         if title is None:
             logging.error("invalid title for {0}".format(self.url))
             raise IOError
-        text = self._convert_text(title.getText())
+        text = title.getText()
         return text
 
     def get_author(self):
@@ -32,7 +32,7 @@ class PodcastFeedParser:
         if author is None:
             logging.error("invalid author for {0}".format(self.url))
             raise IOError
-        text = self._convert_text(author.getText())
+        text = author.getText()
         return text
 
     def get_image(self):
@@ -40,7 +40,7 @@ class PodcastFeedParser:
         if image is None or not image.has_attr('href'):
             logging.error("invalid image for {0}".format(self.url))
             raise IOError
-        url = self._convert_text(image['href'])
+        url = image['href']
         return url
 
     def get_summary(self):
@@ -48,7 +48,7 @@ class PodcastFeedParser:
         if summary is None:
             logging.error("invalid summary for {0}".format(self.url))
             raise IOError
-        html = self._convert_text(summary.getText())
+        html = summary.getText()
         return html
 
     def get_category(self):
@@ -56,7 +56,7 @@ class PodcastFeedParser:
         if category is None or not category.has_attr('text'):
             logging.error("invalid category for {0}".format(self.url))
             raise IOError
-        text = self._convert_text(category['text'])
+        text = category['text']
         return text
 
     def get_explicit(self):
@@ -64,7 +64,7 @@ class PodcastFeedParser:
         if explicit is None:
             logging.error("invalid explicit value for {0}".format(self.url))
             raise IOError
-        text = self._convert_text(explicit.getText())
+        text = explicit.getText()
         return False if "no" == text else True
 
     def get_link(self):
@@ -72,7 +72,7 @@ class PodcastFeedParser:
         if link is None:
             logging.error("invalid link for {0}".format(self.url))
             raise IOError
-        text = self._convert_text(link.getText())
+        text = link.getText()
         return text
 
     def get_language(self):
@@ -80,15 +80,30 @@ class PodcastFeedParser:
         if language is None:
             logging.error("invalid language for {0}".format(self.url))
             raise IOError
-        text = self._convert_text(language.getText())
+        text = language.getText()
+        return text
+
+    def has_new_feed(self):
+        result = False
+        new_feed = self.xml.find('itunes:new-feed-url')
+        if new_feed is not None:
+            result = True
+        return result
+
+    def get_new_feed(self):
+        new_feed = self.xml.find('itunes:new-feed-url')
+        if new_feed is None:
+            logging.error("no new feed for {0}".format(self.url))
+            raise IOError
+        text = new_feed.getText()
         return text
 
     def get_copyright(self):
-        copyr = self.xml.find('copyright')
-        if copyr is None:
+        podcast_copyright = self.xml.find('copyright')
+        if podcast_copyright is None:
             logging.error("invalid copyright for {0}".format(self.url))
             raise IOError
-        text = self._convert_text(copyr.getText())
+        text = podcast_copyright.getText()
         return text
 
     def get_blocked(self):
@@ -96,7 +111,7 @@ class PodcastFeedParser:
         if blocked is None:
             text = 'no'
         else:
-            text = self._convert_text(blocked.getText())
+            text = blocked.getText()
         return False if 'no' == text else True
 
     def get_complete(self):
@@ -104,7 +119,7 @@ class PodcastFeedParser:
         if complete is None:
             text = 'no'
         else:
-            text = self._convert_text(complete.getText())
+            text = complete.getText()
         return False if 'no' == text else True
 
     def get_keywords(self):
@@ -112,7 +127,7 @@ class PodcastFeedParser:
         if keywords is None:
             logging.error("invalid keywords for {0}".format(self.url))
             raise IOError
-        text = self._convert_text(keywords.getText())
+        text = keywords.getText()
         return text
 
     def get_episode(self, i):
@@ -128,25 +143,38 @@ class PodcastFeedParser:
 
         title = episode.find('title')
         if title is not None:
-            result['title'] = self._convert_text(title.getText())
+            result['title'] = title.getText()
 
         link = episode.find('link')
         if link is not None:
-            result['link'] = self._convert_text(link.getText())
+            url = link.getText()
+            if url is None:
+                if link.has_attr('url'):
+                    url = link['url']
+                    result['link'] = url
+            else:
+                result['link'] = url
 
         subtitle = episode.find('itunes:subtitle')
         if subtitle is not None:
-            result['subtitle'] = self._convert_text(subtitle.getText())
+            result['subtitle'] = subtitle.getText()
+
+        blocked = episode.find('itunes:blocked')
+        if blocked is None:
+            text = 'no'
+        else:
+            text = blocked.getText()
+        result['blocked'] = False if 'no' == text else True
 
         description = episode.find('description')
         if description is None:
             description = episode.find('itunes:summary')
         if description is not None:
-            result['description'] = self._convert_text(description.getText())
+            result['description'] = description.getText()
 
         pubdate = episode.find('pubdate')
         if pubdate is not None:
-            pubdate_string = self._convert_text(pubdate.getText())
+            pubdate_string = pubdate.getText()
             try:
                 result['date'] = time.strptime(pubdate_string, RFC_2822_FORMAT)
             except ValueError:
@@ -156,6 +184,7 @@ class PodcastFeedParser:
         if duration is not None:
             duration_string = duration.getText()
             count = duration_string.count(':')
+            time_format = None
             if 0 == count:
                 time_format = '%S'
             elif 1 == count:
@@ -171,20 +200,20 @@ class PodcastFeedParser:
 
         explicit = episode.find('itunes:explicit')
         if explicit is not None:
-            explicit_string = self._convert_text(explicit.getText())
+            explicit_string = explicit.getText()
             result['explicit'] = False if 'no' == explicit_string else True
         else:
             result['explicit'] = False
 
         keywords = episode.find('itunes:keywords')
         if keywords is not None:
-            result['keywords'] = self._convert_text(keywords.getText())
+            result['keywords'] = keywords.getText()
 
         guid = episode.find('guid')
         if guid is None:
             guid = episode.find('link')
         if guid is not None:
-            result['guid'] = self._convert_text(guid.getText())
+            result['guid'] = guid.getText()
 
         return result
 
@@ -213,25 +242,17 @@ class PodcastFeedParser:
         return result
 
     def _populate_episodes(self):
-        if self.episodes is None:
+        if len(self.episodes) == 0:
             self.episodes = self.xml.find_all('item')
-        if self.episodes is None:
-            self.episodes = []
 
-    def _convert_text(self, text):
-        #if self.utf and isinstance(text, str):
-        #    text = text.encode('UTF-8')
-        return text
 
 def async_main():
     pass
 
+
 def serial_main():
     pass
 
+
 if __name__ == "__main__":
     serial_main()
-
-
-
-
