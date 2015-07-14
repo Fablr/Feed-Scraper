@@ -2,22 +2,35 @@ __author__ = 'Chris Day'
 __publisher__ = 'Fabler'
 
 from bs4 import BeautifulSoup
+from multiprocessing import Pool
+from corgi_cache import CorgiCache
+from email.utils import formatdate
 import requests
 import logging
 import time
 
 RFC_2822_FORMAT = '%a, %d %b %Y %H:%M:%S %Z'
-
+USER_AGENT = 'Fabler Crawler'
 
 class PodcastFeedParser:
-    def __init__(self, url):
+    def __init__(self, url, etag="", last_request=""):
         self.url = url
         self.episodes = []
-        self.response = requests.get(url)
+
+        header = self._generate_header(etag=etag, last_visit=last_request, user_agent=USER_AGENT)
+        self.response = requests.get(url=url, header=header)
         if 200 != self.response.status_code:
             logging.error("status code {0} from {1}".format(self.response.status_code, url))
             raise IOError
+
         self.xml = BeautifulSoup(self.response.content, "html.parser")
+        return
+
+    def get_etag(self):
+        if 'ETag' not in self.response.headers:
+            logging.error("no etag present for {0}".format(self.url))
+            raise IOError
+        return self.response.headers['ETag']
 
     def get_title(self):
         title = self.xml.find('title')
@@ -245,14 +258,96 @@ class PodcastFeedParser:
         if len(self.episodes) == 0:
             self.episodes = self.xml.find_all('item')
 
+    @staticmethod
+    def _generate_header(etag="", last_visit="", user_agent=""):
+        header = {}
+
+        if "" != etag:
+            header['If-Not-Match'] = etag
+
+        if "" != last_visit:
+            header['If-Modified-Since'] = last_visit
+
+        if "" != user_agent:
+            header['User-Agent'] = user_agent
+
+        return header
+
+
+def scrap_feed(feed):
+    etag = ""
+    last_crawled = ""
+
+    cache = CorgiCache()
+
+    if 'URL' not in feed:
+        logging.error("no feed for {0}".format(feed))
+        return
+
+    if 'ETAG' in feed:
+        etag = feed['ETAG']
+
+    if 'CRAWLED' in feed:
+        last_crawled = feed['CRAWLED']
+
+    url = feed['URL']
+
+    parser = PodcastFeedParser(url=url, etag=etag, last_request=last_crawled)
+    feed['CRAWLED'] = formatdate()
+
+    try:
+        if parser.has_new_feed():
+            logging.info("new feed for {0}".format(url))
+
+            url = parser.get_new_feed()
+            logging.info("new feed is {0}".format(url))
+
+            feed['URL'] = url
+            cache.put_feed(data=feed)
+            parser = PodcastFeedParser(url=url)
+            feed['CRAWLED'] = formatdate()
+
+        if parser.get_blocked():
+            logging.warning("feed blocked for {0}".format(url))
+            return
+
+        # get all the data
+
+        try:
+            feed['ETAG'] = parser.get_etag()
+        except IOError:
+            pass
+
+        cache.put_feed(feed)
+        logging.info("finished scraping, {0}".format(url))
+    except IOError:
+        return
+    return
+
 
 def async_main():
-    pass
+    pool = Pool()
+    cache = CorgiCache()
+
+    feeds = cache.get_all_feeds()
+
+    for feed in feeds:
+        pool.apply_async(scrap_feed(feed=feed))
+
+    pool.close()
+    pool.join()
+    return
 
 
 def serial_main():
-    pass
+    cache = CorgiCache()
+    feeds = cache.get_all_feeds()
+
+    for feed in feeds:
+        scrap_feed(feed)
+
+    return
 
 
 if __name__ == "__main__":
-    serial_main()
+    async_main()
