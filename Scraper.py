@@ -14,6 +14,7 @@ import sys
 RFC_2822_FORMAT = '%a, %d %b %Y %H:%M:%S %Z'
 USER_AGENT = 'Fabler Crawler'
 
+
 class PodcastFeedParser:
     def __init__(self, url, etag="", last_request=""):
         self.url = url
