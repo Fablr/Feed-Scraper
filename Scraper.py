@@ -8,6 +8,8 @@ from email.utils import formatdate
 import requests
 import logging
 import time
+import getopt
+import sys
 
 RFC_2822_FORMAT = '%a, %d %b %Y %H:%M:%S %Z'
 USER_AGENT = 'Fabler Crawler'
@@ -325,29 +327,77 @@ def scrap_feed(feed):
     return
 
 
-def async_main():
-    pool = Pool()
-    cache = CorgiCache()
-
-    feeds = cache.get_all_feeds()
-
-    for feed in feeds:
-        pool.apply_async(scrap_feed(feed=feed))
-
-    pool.close()
-    pool.join()
+def usage():
+    print("usage: python Scraper.py [-h,--help] [-v,--verbose,--debug]")
+    print("       [-d,--daemon] [-l,--log <path>]")
     return
 
 
-def serial_main():
+def async_main(daemon_mode):
+    pool = Pool()
     cache = CorgiCache()
-    feeds = cache.get_all_feeds()
 
-    for feed in feeds:
-        scrap_feed(feed)
+    while True:
+        feeds = cache.get_all_feeds()
 
+        for feed in feeds:
+            pool.apply_async(scrap_feed(feed=feed))
+
+        pool.close()
+        pool.join()
+
+        if not daemon_mode:
+            break
+    return
+
+
+def serial_main(daemon_mode):
+    cache = CorgiCache()
+
+    while True:
+        feeds = cache.get_all_feeds()
+
+        for feed in feeds:
+            scrap_feed(feed)
+
+        if not daemon_mode:
+            break
     return
 
 
 if __name__ == "__main__":
-    async_main()
+    verbose = False
+    debug = False
+    daemon = False
+    log_file = "log.txt"
+    level = logging.WARNING
+    argv = sys.argv[1:]
+
+    try:
+        opts, args = getopt.getopt(argv, "hvdl:", ["help", "verbose", "daemon", "log=", "debug"])
+    except getopt.GetoptError:
+        usage()
+        sys.exit(2)
+
+    for opt, arg in opts:
+        if opt in ("-h", "--help"):
+            usage()
+            sys.exit()
+        elif opt in ("-v", "--verbose"):
+            verbose = True
+        elif opt in ("-d", "--daemon"):
+            daemon = True
+        elif opt in ("-l", "--log"):
+            log_file = arg
+        elif opt == "debug":
+            debug = True
+
+    if verbose:
+        level = logging.INFO
+
+    if debug:
+        level = logging.DEBUG
+
+    logging.basicConfig(level=level, filename=log_file)
+
+    async_main(daemon_mode=daemon)
