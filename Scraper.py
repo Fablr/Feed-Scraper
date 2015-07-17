@@ -13,7 +13,8 @@ import sys
 
 RFC_2822_FORMAT = '%a, %d %b %Y %H:%M:%S %Z'
 USER_AGENT = 'Fabler Crawler'
-
+FABLER_URL_FORMAT = 'http://fablersite-dev.elasticbeanstalk.com/{0}'
+REFRESH_DATA_FORMAT = 'grant_type=refresh_token&client_id=rA0qBDvsUI4MUYmpeylMPgZUAMojpnLRfvu1L3iW&refresh_token={0}'
 
 class PodcastFeedParser:
     def __init__(self, url, etag="", last_request=""):
@@ -34,6 +35,23 @@ class PodcastFeedParser:
             logging.error("no etag present for {0}".format(self.url))
             raise IOError
         return self.response.headers['ETag']
+
+    def get_owner(self):
+        owner = self.xml.find('itunes:owner')
+        if owner is None:
+            logging.error("invalid owner for {0}".format(self.url))
+            raise IOError
+
+        name = owner.find('itunes:name')
+        if name is None:
+            logging.warning("no name for the owner of {0}".format(self.url))
+            raise IOError
+
+        email = owner.find('itunes:email')
+        if email is None:
+            logging.warning("no email for the owner of {0}".format(self.url))
+
+        return {'NAME': name, 'EMAIL': email}
 
     def get_title(self):
         title = self.xml.find('title')
@@ -277,6 +295,52 @@ class PodcastFeedParser:
         return header
 
 
+def post_data(table_name, data):
+    access_token = ""
+    refresh_token = ""
+
+    authorization = "Bearer {0}".format(access_token)
+    header = {'Authorization': authorization, 'User-Agent': USER_AGENT}
+
+    data = ""
+    for key, value in data:
+        if data != "":
+            data += "&"
+        data += "{0}={1}".format(key, value)
+
+    url = FABLER_URL_FORMAT.format(table_name)
+
+    result = requests.post(url=url, header=header, data=data)
+
+    if 400 <= result.status_code:
+        refresh_data = REFRESH_DATA_FORMAT.format(refresh_token)
+        refresh_url = FABLER_URL_FORMAT.format('o/token/')
+
+        result = requests.post(url=refresh_url, data=refresh_data)
+
+        if 200 != result.status_code:
+            raise IOError
+
+        json = result.json()
+        if 'refresh_token' not in json or 'access_token' not in json:
+            raise IOError
+
+        refresh_token = json['refresh_token']
+        access_token = json['access_token']
+
+        # store new tokens
+
+        header['Authorization'] = "Bearer {0}".format(access_token)
+        result = requests.post(url=url, header=header, data=data)
+
+        if 200 != result.status_code:
+            raise IOError
+    elif 200 != result.status_code:
+        raise IOError
+
+    return
+
+
 def scrap_feed(feed):
     etag = ""
     last_crawled = ""
@@ -314,7 +378,12 @@ def scrap_feed(feed):
             logging.warning("feed blocked for {0}".format(url))
             return
 
-        # get all the data
+        try:
+            owner = parser.get_owner()
+            post_data('publisher', owner)
+
+        except IOError:
+            return
 
         try:
             feed['ETAG'] = parser.get_etag()
@@ -325,6 +394,7 @@ def scrap_feed(feed):
         logging.info("finished scraping, {0}".format(url))
     except IOError:
         return
+
     return
 
 
