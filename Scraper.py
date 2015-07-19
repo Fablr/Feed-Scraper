@@ -13,8 +13,9 @@ import sys
 
 RFC_2822_FORMAT = '%a, %d %b %Y %H:%M:%S %Z'
 USER_AGENT = 'Fabler Crawler'
-FABLER_URL_FORMAT = 'http://fablersite-dev.elasticbeanstalk.com/{0}'
+FABLER_URL_FORMAT = 'http://fablersite-dev.elasticbeanstalk.com/{0}/'
 REFRESH_DATA_FORMAT = 'grant_type=refresh_token&client_id=rA0qBDvsUI4MUYmpeylMPgZUAMojpnLRfvu1L3iW&refresh_token={0}'
+
 
 class PodcastFeedParser:
     def __init__(self, url, etag="", last_request=""):
@@ -22,7 +23,7 @@ class PodcastFeedParser:
         self.episodes = []
 
         header = self._generate_header(etag=etag, last_visit=last_request, user_agent=USER_AGENT)
-        self.response = requests.get(url=url, header=header)
+        self.response = requests.get(url=url, headers=header)
         if 200 != self.response.status_code:
             logging.error("status code {0} from {1}".format(self.response.status_code, url))
             raise IOError
@@ -38,20 +39,25 @@ class PodcastFeedParser:
 
     def get_owner(self):
         owner = self.xml.find('itunes:owner')
-        if owner is None:
-            logging.error("invalid owner for {0}".format(self.url))
-            raise IOError
+        if owner is not None:
+            name = owner.find('itunes:name')
+            if name is None:
+                logging.warning("no name for the owner of {0}".format(self.url))
+                raise IOError
+            else:
+                name = name.getText()
 
-        name = owner.find('itunes:name')
-        if name is None:
-            logging.warning("no name for the owner of {0}".format(self.url))
-            raise IOError
+            email = owner.find('itunes:email')
+            if email is None:
+                logging.warning("no email for the owner of {0}".format(self.url))
+                email = ''
+            else:
+                email = email.getText()
+        else:
+            name = self.get_author()
+            email = ''
 
-        email = owner.find('itunes:email')
-        if email is None:
-            logging.warning("no email for the owner of {0}".format(self.url))
-
-        return {'NAME': name, 'EMAIL': email}
+        return {'name': name, 'email': email}
 
     def get_title(self):
         title = self.xml.find('title')
@@ -96,8 +102,7 @@ class PodcastFeedParser:
     def get_explicit(self):
         explicit = self.xml.find('itunes:explicit')
         if explicit is None:
-            logging.error("invalid explicit value for {0}".format(self.url))
-            raise IOError
+            return False
         text = explicit.getText()
         return False if "no" == text else True
 
@@ -295,50 +300,47 @@ class PodcastFeedParser:
         return header
 
 
-def post_data(table_name, data):
-    access_token = ""
-    refresh_token = ""
+def post_data(table_name, data, token):
+    authorization = "Bearer {0}".format(token)
+    header = {'Authorization': authorization, 'Content-Type': 'application/x-www-form-urlencoded'}
 
-    authorization = "Bearer {0}".format(access_token)
-    header = {'Authorization': authorization, 'User-Agent': USER_AGENT}
+    request_data = ""
+    for key in data:
+        if '' == data[key]:
+            continue
 
-    data = ""
-    for key, value in data:
-        if data != "":
-            data += "&"
-        data += "{0}={1}".format(key, value)
+        if request_data != "":
+            request_data += "&"
+
+        request_data += "{0}={1}".format(key, data[key])
 
     url = FABLER_URL_FORMAT.format(table_name)
 
-    result = requests.post(url=url, header=header, data=data)
+    result = requests.post(url=url, headers=header, data=request_data)
 
-    if 400 <= result.status_code:
-        refresh_data = REFRESH_DATA_FORMAT.format(refresh_token)
-        refresh_url = FABLER_URL_FORMAT.format('o/token/')
-
-        result = requests.post(url=refresh_url, data=refresh_data)
-
-        if 200 != result.status_code:
-            raise IOError
-
-        json = result.json()
-        if 'refresh_token' not in json or 'access_token' not in json:
-            raise IOError
-
-        refresh_token = json['refresh_token']
-        access_token = json['access_token']
-
-        # store new tokens
-
-        header['Authorization'] = "Bearer {0}".format(access_token)
-        result = requests.post(url=url, header=header, data=data)
-
-        if 200 != result.status_code:
-            raise IOError
-    elif 200 != result.status_code:
+    if 300 <= result.status_code:
         raise IOError
 
-    return
+    return result
+
+
+def get_data(table_name, data_filter, token):
+    authorization = "Bearer {0}".format(token)
+    header = {'Authorization': authorization, 'Content-Type': 'application/x-www-form-urlencoded'}
+
+    url = FABLER_URL_FORMAT.format(table_name) + '?'
+    for key in data_filter:
+        if '' == data_filter[key]:
+            continue
+
+        url += "&{0}={1}".format(key, data_filter[key])
+
+    result = requests.get(url=url, headers=header)
+
+    if 300 <= result.status_code:
+        raise IOError
+
+    return result
 
 
 def scrap_feed(feed):
@@ -346,6 +348,7 @@ def scrap_feed(feed):
     last_crawled = ""
 
     cache = CorgiCache()
+    tokens = cache.get_token(use='scraper')
 
     if 'URL' not in feed:
         logging.error("no feed for {0}".format(feed))
@@ -376,11 +379,74 @@ def scrap_feed(feed):
 
         if parser.get_blocked():
             logging.warning("feed blocked for {0}".format(url))
-            return
 
         try:
-            owner = parser.get_owner()
-            post_data('publisher', owner)
+            publisher = parser.get_owner()
+            pub_filter = {'name': publisher['name']}
+            data = get_data(table_name='publisher', data_filter=pub_filter, token=tokens['TOKEN'])
+            data = data.json()
+            if 0 == len(data):
+                data = post_data(table_name='publisher', data=publisher, token=tokens['TOKEN'])
+
+                data = data.json()
+                if 'id' not in data:
+                    raise IOError
+            else:
+                data = data[0]
+
+            publisher_id = data['id']
+            title = parser.get_title()
+            author = parser.get_author()
+            summary = parser.get_summary()
+            category = parser.get_category()
+            explicit = parser.get_explicit()
+            link = parser.get_link()
+            podcast_copyright = parser.get_copyright()
+            blocked = parser.get_blocked()
+            complete = parser.get_complete()
+            keywords = parser.get_keywords()
+
+            pod_filter = {'publisher': publisher_id,
+                          'title': title}
+
+            data = get_data(table_name='podcast', data_filter=pod_filter, token=tokens['TOKEN'])
+            data = data.json()
+            if 0 == len(data):
+                podcast = {'publisher': publisher_id,
+                           'title': title,
+                           'author': author,
+                           'summary': summary,
+                           'category': category,
+                           'explicit': explicit,
+                           'link': link,
+                           'copyright': podcast_copyright,
+                           'blocked': blocked,
+                           'complete': complete,
+                           'keywords': keywords}
+
+                data = post_data(table_name='podcast', data=podcast, token=tokens['TOKEN'])
+
+                data = data.json()
+                if 'id' not in data:
+                    raise IOError
+            else:
+                data = data[0]
+
+            podcast_id = data['id']
+
+            guids = []
+            if 'GUIDS' in feed:
+                guids = feed['GUIDS']
+                episodes = parser.get_new_episodes(guids)
+            else:
+                episodes = parser.get_all_episodes()
+
+            for episode in episodes:
+                guids.append(episode['guid'])
+                episode['podcast'] = podcast_id
+                post_data(table_name='episode', data=episode, token=tokens['TOKEN'])
+
+            feed['GUIDS'] = guids
 
         except IOError:
             return
@@ -471,4 +537,4 @@ if __name__ == "__main__":
 
     logging.basicConfig(level=level, filename=log_file)
 
-    async_main(daemon_mode=daemon)
+    serial_main(daemon_mode=daemon)
