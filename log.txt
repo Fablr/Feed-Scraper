@@ -1,0 +1,218 @@
+ERROR:root:invalid summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:invalid summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:invalid copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:invalid copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:invalid keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+WARNING:root:invalid time format for duration, 65, %S
+WARNING:root:invalid time format for duration, 64, %S
+WARNING:root:invalid time format for duration, 62, %S
+WARNING:root:invalid time format for duration, 63, %S
+WARNING:root:invalid time format for duration, 62, %S
+WARNING:root:invalid time format for duration, 64, %S
+WARNING:root:invalid time format for duration, 63, %S
+WARNING:root:invalid time format for duration, 66, %S
+WARNING:root:invalid time format for duration, 64, %S
+WARNING:root:invalid time format for duration, 62, %S
+WARNING:root:invalid time format for duration, 63, %S
+WARNING:root:invalid time format for duration, 63, %S
+WARNING:root:invalid time format for duration, 63, %S
+WARNING:root:invalid time format for duration, 62, %S
+WARNING:root:invalid time format for duration, 62, %S
+WARNING:root:invalid time format for duration, 62, %S
+WARNING:root:invalid time format for duration, 66, %S
+WARNING:root:invalid time format for duration, 65, %S
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+WARNING:root:invalid time format for duration, 65, %S
+WARNING:root:invalid time format for duration, 64, %S
+WARNING:root:invalid time format for duration, 62, %S
+WARNING:root:invalid time format for duration, 63, %S
+WARNING:root:invalid time format for duration, 62, %S
+WARNING:root:invalid time format for duration, 64, %S
+WARNING:root:invalid time format for duration, 63, %S
+WARNING:root:invalid time format for duration, 66, %S
+WARNING:root:invalid time format for duration, 64, %S
+WARNING:root:invalid time format for duration, 62, %S
+WARNING:root:invalid time format for duration, 63, %S
+WARNING:root:invalid time format for duration, 63, %S
+WARNING:root:invalid time format for duration, 63, %S
+WARNING:root:invalid time format for duration, 62, %S
+WARNING:root:invalid time format for duration, 62, %S
+WARNING:root:invalid time format for duration, 62, %S
+WARNING:root:invalid time format for duration, 66, %S
+WARNING:root:invalid time format for duration, 65, %S
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+WARNING:root:invalid time format for duration, 65, %S
+WARNING:root:invalid time format for duration, 64, %S
+WARNING:root:invalid time format for duration, 62, %S
+WARNING:root:invalid time format for duration, 63, %S
+WARNING:root:invalid time format for duration, 62, %S
+WARNING:root:invalid time format for duration, 64, %S
+WARNING:root:invalid time format for duration, 63, %S
+WARNING:root:invalid time format for duration, 66, %S
+WARNING:root:invalid time format for duration, 64, %S
+WARNING:root:invalid time format for duration, 62, %S
+WARNING:root:invalid time format for duration, 63, %S
+WARNING:root:invalid time format for duration, 63, %S
+WARNING:root:invalid time format for duration, 63, %S
+WARNING:root:invalid time format for duration, 62, %S
+WARNING:root:invalid time format for duration, 62, %S
+WARNING:root:invalid time format for duration, 62, %S
+WARNING:root:invalid time format for duration, 66, %S
+WARNING:root:invalid time format for duration, 65, %S
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no summary for http://www4.rsi.ch/podcast/rss/Pipino_il_bravo.cfm
+WARNING:root:invalid time format for pubdate, Thu, 25 Aug 2011 11:05 +0100
+WARNING:root:invalid time format for pubdate, Thu, 25 Aug 2011 11:03 +0100
+WARNING:root:invalid time format for pubdate, Thu, 18 Aug 2011 10:57 +0100
+WARNING:root:invalid time format for pubdate, Thu, 11 Aug 2011 11:00 +0100
+WARNING:root:invalid time format for pubdate, Thu, 4 Aug 2011 11:13 +0100
+WARNING:root:invalid time format for pubdate, Thu, 28 Jul 2011 11:52 +0100
+WARNING:root:invalid time format for pubdate, Thu, 28 Jul 2011 11:51 +0100
+WARNING:root:invalid time format for pubdate, Thu, 21 Jul 2011 12:18 +0100
+WARNING:root:invalid time format for pubdate, Thu, 21 Jul 2011 12:17 +0100
+WARNING:root:invalid time format for pubdate, Thu, 14 Jul 2011 10:51 +0100
+WARNING:root:invalid time format for pubdate, Thu, 7 Jul 2011 12:28 +0100
+WARNING:root:invalid time format for pubdate, Tue, 5 Jul 2011 14:41 +0100
+ERROR:root:no etag present for http://www4.rsi.ch/podcast/rss/Pipino_il_bravo.cfm
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no summary for http://www4.rsi.ch/podcast/rss/Pipino_il_bravo.cfm
+WARNING:root:invalid time format for pubdate, Thu, 25 Aug 2011 11:05 +0100
+WARNING:root:invalid time format for pubdate, Thu, 25 Aug 2011 11:03 +0100
+WARNING:root:invalid time format for pubdate, Thu, 18 Aug 2011 10:57 +0100
+WARNING:root:invalid time format for pubdate, Thu, 11 Aug 2011 11:00 +0100
+WARNING:root:invalid time format for pubdate, Thu, 4 Aug 2011 11:13 +0100
+WARNING:root:invalid time format for pubdate, Thu, 28 Jul 2011 11:52 +0100
+WARNING:root:invalid time format for pubdate, Thu, 28 Jul 2011 11:51 +0100
+WARNING:root:invalid time format for pubdate, Thu, 21 Jul 2011 12:18 +0100
+WARNING:root:invalid time format for pubdate, Thu, 21 Jul 2011 12:17 +0100
+WARNING:root:invalid time format for pubdate, Thu, 14 Jul 2011 10:51 +0100
+WARNING:root:invalid time format for pubdate, Thu, 7 Jul 2011 12:28 +0100
+WARNING:root:invalid time format for pubdate, Tue, 5 Jul 2011 14:41 +0100
+ERROR:root:no etag present for http://www4.rsi.ch/podcast/rss/Pipino_il_bravo.cfm
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no summary for http://www4.rsi.ch/podcast/rss/Pipino_il_bravo.cfm
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no summary for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no copyright for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no keywords for http://podcastrss.play.it/charlie-langton-briefs_mp3_128.xml
+ERROR:root:no summary for http://www4.rsi.ch/podcast/rss/Pipino_il_bravo.cfm
+WARNING:root:invalid time format for pubdate, Thu, 25 Aug 2011 11:05 +0100
+WARNING:root:invalid time format for pubdate, Thu, 25 Aug 2011 11:03 +0100
+WARNING:root:invalid time format for pubdate, Thu, 18 Aug 2011 10:57 +0100
+WARNING:root:invalid time format for pubdate, Thu, 11 Aug 2011 11:00 +0100
+WARNING:root:invalid time format for pubdate, Thu, 4 Aug 2011 11:13 +0100
+WARNING:root:invalid time format for pubdate, Thu, 28 Jul 2011 11:52 +0100
+WARNING:root:invalid time format for pubdate, Thu, 28 Jul 2011 11:51 +0100
+WARNING:root:invalid time format for pubdate, Thu, 21 Jul 2011 12:18 +0100
+WARNING:root:invalid time format for pubdate, Thu, 21 Jul 2011 12:17 +0100
+WARNING:root:invalid time format for pubdate, Thu, 14 Jul 2011 10:51 +0100
+WARNING:root:invalid time format for pubdate, Thu, 7 Jul 2011 12:28 +0100
+WARNING:root:invalid time format for pubdate, Tue, 5 Jul 2011 14:41 +0100
+ERROR:root:no etag present for http://www4.rsi.ch/podcast/rss/Pipino_il_bravo.cfm

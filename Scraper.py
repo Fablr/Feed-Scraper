@@ -5,13 +5,19 @@ from bs4 import BeautifulSoup
 from multiprocessing import Pool
 from corgi_cache import CorgiCache
 from email.utils import formatdate
+from xml.sax.saxutils import unescape
+import urllib
 import requests
 import logging
 import time
 import getopt
 import sys
+import datetime
 
 RFC_2822_FORMAT = '%a, %d %b %Y %H:%M:%S %Z'
+RFC_2822_FORMAT_NO_SECONDS = '%a, %d %b %Y %H:%M %Z'
+API_FORMAT = '%Y-%m-%dT%H:%M:%S'
+API_DURATION_FORMAT = '%H:%M:%S'
 USER_AGENT = 'Fabler Crawler'
 FABLER_URL_FORMAT = 'http://fablersite-dev.elasticbeanstalk.com/{0}/'
 REFRESH_DATA_FORMAT = 'grant_type=refresh_token&client_id=rA0qBDvsUI4MUYmpeylMPgZUAMojpnLRfvu1L3iW&refresh_token={0}'
@@ -45,14 +51,14 @@ class PodcastFeedParser:
                 logging.warning("no name for the owner of {0}".format(self.url))
                 raise IOError
             else:
-                name = name.getText()
+                name = self._clean_text(name.text)
 
             email = owner.find('itunes:email')
             if email is None:
                 logging.warning("no email for the owner of {0}".format(self.url))
                 email = ''
             else:
-                email = email.getText()
+                email = self._clean_text(email.text)
         else:
             name = self.get_author()
             email = ''
@@ -64,7 +70,7 @@ class PodcastFeedParser:
         if title is None:
             logging.error("invalid title for {0}".format(self.url))
             raise IOError
-        text = title.getText()
+        text = self._clean_text(title.text)
         return text
 
     def get_author(self):
@@ -72,7 +78,7 @@ class PodcastFeedParser:
         if author is None:
             logging.error("invalid author for {0}".format(self.url))
             raise IOError
-        text = author.getText()
+        text = self._clean_text(author.text)
         return text
 
     def get_image(self):
@@ -86,9 +92,10 @@ class PodcastFeedParser:
     def get_summary(self):
         summary = self.xml.find('itunes:summary')
         if summary is None:
-            logging.error("invalid summary for {0}".format(self.url))
-            raise IOError
-        html = summary.getText()
+            logging.error("no summary for {0}".format(self.url))
+            html = ''
+        else:
+            html = self._clean_text(summary.text)
         return html
 
     def get_category(self):
@@ -140,9 +147,10 @@ class PodcastFeedParser:
     def get_copyright(self):
         podcast_copyright = self.xml.find('copyright')
         if podcast_copyright is None:
-            logging.error("invalid copyright for {0}".format(self.url))
-            raise IOError
-        text = podcast_copyright.getText()
+            logging.error("no copyright for {0}".format(self.url))
+            text = ''
+        else:
+            text = self._clean_text(podcast_copyright.text)
         return text
 
     def get_blocked(self):
@@ -164,9 +172,10 @@ class PodcastFeedParser:
     def get_keywords(self):
         keywords = self.xml.find('itunes:keywords')
         if keywords is None:
-            logging.error("invalid keywords for {0}".format(self.url))
-            raise IOError
-        text = keywords.getText()
+            logging.error("no keywords for {0}".format(self.url))
+            text = ''
+        else:
+            text = self._clean_text(keywords.text)
         return text
 
     def get_episode(self, i):
@@ -182,21 +191,27 @@ class PodcastFeedParser:
 
         title = episode.find('title')
         if title is not None:
-            result['title'] = title.getText()
+            result['title'] = self._clean_text(title.text)
 
-        link = episode.find('link')
+        link = episode.find('enclosure')
         if link is not None:
-            url = link.getText()
-            if url is None:
-                if link.has_attr('url'):
-                    url = link['url']
-                    result['link'] = url
-            else:
+            if link.has_attr('url'):
+                url = link['url']
                 result['link'] = url
+        else:
+            link = episode.find('link')
+            if link is not None:
+                url = link.getText()
+                if url is None:
+                    if link.has_attr('url'):
+                        url = link['url']
+                        result['link'] = url
+                else:
+                    result['link'] = url
 
         subtitle = episode.find('itunes:subtitle')
         if subtitle is not None:
-            result['subtitle'] = subtitle.getText()
+            result['subtitle'] = self._clean_text(subtitle.text)
 
         blocked = episode.find('itunes:blocked')
         if blocked is None:
@@ -209,33 +224,22 @@ class PodcastFeedParser:
         if description is None:
             description = episode.find('itunes:summary')
         if description is not None:
-            result['description'] = description.getText()
+            result['description'] = self._clean_text(description.text)
 
         pubdate = episode.find('pubdate')
         if pubdate is not None:
             pubdate_string = pubdate.getText()
             try:
-                result['date'] = time.strptime(pubdate_string, RFC_2822_FORMAT)
+                result['pubdate'] = time.strptime(pubdate_string, RFC_2822_FORMAT)
             except ValueError:
-                logging.warning("invalid time format for pubdate, {0}".format(pubdate_string))
+                try:
+                    result['pubdate'] = time.strptime(pubdate_string, RFC_2822_FORMAT_NO_SECONDS)
+                except ValueError:
+                    logging.warning("invalid time format for pubdate, {0}".format(pubdate_string))
 
         duration = episode.find('itunes:duration')
         if duration is not None:
-            duration_string = duration.getText()
-            count = duration_string.count(':')
-            time_format = None
-            if 0 == count:
-                time_format = '%S'
-            elif 1 == count:
-                time_format = '%M:%S'
-            elif 2 == count:
-                time_format = '%H:%M:%S'
-
-            if time_format is not None:
-                try:
-                    result['duration'] = time.strptime(duration_string, time_format)
-                except ValueError:
-                    logging.warning("invalid time format for duration, {0}, {1}".format(duration_string, time_format))
+            result['duration'] = self._clean_text(duration.text)
 
         explicit = episode.find('itunes:explicit')
         if explicit is not None:
@@ -246,13 +250,13 @@ class PodcastFeedParser:
 
         keywords = episode.find('itunes:keywords')
         if keywords is not None:
-            result['keywords'] = keywords.getText()
+            result['keywords'] = self._clean_text(keywords.text)
 
         guid = episode.find('guid')
         if guid is None:
             guid = episode.find('link')
         if guid is not None:
-            result['guid'] = guid.getText()
+            result['guid'] = guid.text
 
         return result
 
@@ -285,6 +289,13 @@ class PodcastFeedParser:
             self.episodes = self.xml.find_all('item')
 
     @staticmethod
+    def _clean_text(text):
+        text = unescape(text, {"&apos;": "'", "&quot;": '"'})
+        text = ' '.join(text.split())
+        text = text.strip()
+        return text
+
+    @staticmethod
     def _generate_header(etag="", last_visit="", user_agent=""):
         header = {}
 
@@ -312,7 +323,18 @@ def post_data(table_name, data, token):
         if request_data != "":
             request_data += "&"
 
-        request_data += "{0}={1}".format(key, data[key])
+        if type(data[key]) is time.struct_time:
+            value = time.strftime(API_FORMAT, data[key])
+            value = urllib.parse.quote(value)
+        elif type(data[key]) is datetime.datetime:
+            value = time.strftime(API_DURATION_FORMAT, data[key])
+            value = urllib.parse.quote(value)
+        elif type(data[key]) is str:
+            value = urllib.parse.quote(data[key])
+        else:
+            value = data[key]
+
+        request_data += "{0}={1}".format(key, value)
 
     url = FABLER_URL_FORMAT.format(table_name)
 
@@ -373,7 +395,7 @@ def scrap_feed(feed):
             logging.info("new feed is {0}".format(url))
 
             feed['URL'] = url
-            cache.put_feed(data=feed)
+            feed.save()
             parser = PodcastFeedParser(url=url)
             feed['CRAWLED'] = formatdate()
 
@@ -444,6 +466,7 @@ def scrap_feed(feed):
             for episode in episodes:
                 guids.append(episode['guid'])
                 episode['podcast'] = podcast_id
+                del episode['guid']
                 post_data(table_name='episode', data=episode, token=tokens['TOKEN'])
 
             feed['GUIDS'] = guids
@@ -456,7 +479,7 @@ def scrap_feed(feed):
         except IOError:
             pass
 
-        cache.put_feed(feed)
+        feed.save()
         logging.info("finished scraping, {0}".format(url))
     except IOError:
         return
@@ -478,7 +501,7 @@ def async_main(daemon_mode):
         feeds = cache.get_all_feeds()
 
         for feed in feeds:
-            pool.apply_async(scrap_feed(feed=feed))
+            pool.apply_async(func=scrap_feed, args=feed)
 
         pool.close()
         pool.join()
