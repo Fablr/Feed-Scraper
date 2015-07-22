@@ -12,15 +12,12 @@ import logging
 import time
 import getopt
 import sys
-import datetime
 
 RFC_2822_FORMAT = '%a, %d %b %Y %H:%M:%S %Z'
 RFC_2822_FORMAT_NO_SECONDS = '%a, %d %b %Y %H:%M %Z'
 API_FORMAT = '%Y-%m-%dT%H:%M:%S'
-API_DURATION_FORMAT = '%H:%M:%S'
 USER_AGENT = 'Fabler Crawler'
 FABLER_URL_FORMAT = 'http://fablersite-dev.elasticbeanstalk.com/{0}/'
-REFRESH_DATA_FORMAT = 'grant_type=refresh_token&client_id=rA0qBDvsUI4MUYmpeylMPgZUAMojpnLRfvu1L3iW&refresh_token={0}'
 
 
 class PodcastFeedParser:
@@ -325,9 +322,6 @@ def post_data(table_name, data, token):
 
         if type(data[key]) is time.struct_time:
             value = time.strftime(API_FORMAT, data[key])
-            value = urllib.parse.quote(value)
-        elif type(data[key]) is datetime.datetime:
-            value = time.strftime(API_DURATION_FORMAT, data[key])
             value = urllib.parse.quote(value)
         elif type(data[key]) is str:
             value = urllib.parse.quote(data[key])
